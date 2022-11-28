@@ -81,33 +81,41 @@ function key_move(key_code) {
 
 function up_button() {
     console.log('up');
-    if (player_position.y > (elements_sizes * 2)){
+    if ((player_position.y - elements_sizes) < elements_sizes){
+       console.log('out') 
+    } else {        
         player_position.y -= elements_sizes;
+        start_game(); 
     }
-    start_game(); 
 }
 function down_button() {
     console.log('down')
-    if (player_position.y < canvas_sizes){
+    if ((player_position.y + elements_sizes) > canvas_sizes){
+        console.log('out')
+    } else {
         player_position.y += elements_sizes;
+
     }
     start_game()
 }
 function rigth_button() {
     console.log('rigth')
-    console.log(canvas_sizes - elements_sizes)
-    if (player_position.x < (canvas_sizes - elements_sizes - 1)){
-        player_position.x += elements_sizes;
-    }
-    start_game()
+    if ((player_position.x + elements_sizes) >= canvas_sizes){
+        console.log('out') 
+     } else {        
+         player_position.x += elements_sizes;
+         start_game()
+     }
 }
 
 function left_button() {
     console.log('left')
-    if( player_position.x > elements_sizes){
-        player_position.x -= elements_sizes;
-    }
-    start_game()
+    if ((player_position.x - (elements_sizes - 100)) < (elements_sizes)){
+        console.log('out') 
+     } else {        
+         player_position.x -= elements_sizes;
+         start_game()
+     }
 }
 
 function player_move() {
