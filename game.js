@@ -12,19 +12,13 @@ let emoji;
 let position_x;
 let position_y;
 
-const last_player_position = {
-    x: 0,
-    y: 0
-};
+
 
 const player_position = {
-    x: 0,
-    y: 0
-};
-const start_player_position = {
     x: undefined,
     y: undefined
 };
+
 
 function set_canvas_sizes(){
     if (window.innerHeight > window.innerWidth){
@@ -51,7 +45,9 @@ function start_game() {
     const map_rows = map.trim().split('\n');
 
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
-    
+   
+    game.clearRect(0, 0, canvas_sizes, canvas_sizes)
+
     map_rows_col_element.forEach((row, row_index) => {
         
         row.forEach((col, col_index) => {
@@ -60,9 +56,11 @@ function start_game() {
             position_y = elements_sizes * (row_index + 1)
 
             if (col == 'O') {
-                start_player_position.x = position_x; 
-                start_player_position.y = position_y;
-                console.log({start_player_position})
+                if(!player_position.x && !player_position.y ){
+                player_position.x = position_x; 
+                player_position.y = position_y;
+                console.log({player_position})
+                }
             }
             // console.log([`esto es x ${position_x} y esto es y ${position_y}`]);
 
@@ -83,79 +81,37 @@ function key_move(key_code) {
 
 function up_button() {
     console.log('up');
-    if(player_position.y == 0){
-        player_position.y = start_player_position.y - elements_sizes
-    } else {
-        player_position.y -= elements_sizes
-        last_player_position.y = player_position.y + elements_sizes
+    if (player_position.y > (elements_sizes * 2)){
+        player_position.y -= elements_sizes;
     }
-    player_move();
-    if (player_move() > 0) {
-        if(last_player_position.x !== player_position.x){
-            last_player_position.x = player_position.x
-        }
-        game.clearRect(last_player_position.x + 10, last_player_position.y - elements_sizes + 17, elements_sizes , elements_sizes);
-    }
+    start_game(); 
 }
 function down_button() {
     console.log('down')
-    if(player_position.y == 0){
-        player_position.y = start_player_position.y + elements_sizes
-    } else {
-        player_position.y += elements_sizes
-        last_player_position.y = player_position.y - elements_sizes
+    if (player_position.y < canvas_sizes){
+        player_position.y += elements_sizes;
     }
-    player_move();
-    if (player_move() > 0) {
-        if(last_player_position.x !== player_position.x){
-            last_player_position.x = player_position.x
-        }
-        game.clearRect(last_player_position.x + 10, last_player_position.y - elements_sizes, elements_sizes , elements_sizes + 11);
-    }
+    start_game()
 }
 function rigth_button() {
     console.log('rigth')
-    if(player_position.x == 0){
-        player_position.x = start_player_position.x + elements_sizes
-    } else {
-        player_position.x += elements_sizes
-        last_player_position.x = player_position.x - elements_sizes
+    console.log(canvas_sizes - elements_sizes)
+    if (player_position.x < (canvas_sizes - elements_sizes - 1)){
+        player_position.x += elements_sizes;
     }
-    player_move();
-    if (player_move() > 0) {
-        game.clearRect(last_player_position.x + 10, player_position.y - elements_sizes , elements_sizes , elements_sizes + 20);
-    }
+    start_game()
 }
 
 function left_button() {
     console.log('left')
-    if(player_position.x == 0){
-        player_position.x = start_player_position.x - elements_sizes
-    } else {
-        player_position.x -= elements_sizes
-        last_player_position.x = player_position.x + elements_sizes
+    if( player_position.x > elements_sizes){
+        player_position.x -= elements_sizes;
     }
-    player_move();
-    if (player_move() > 0) {
-        game.clearRect(last_player_position.x + 10, player_position.y - elements_sizes , elements_sizes , elements_sizes + 20);
-    }
+    start_game()
 }
 
 function player_move() {
-    
-    let position = player_position.x + player_position.y;
-    let last_position = last_player_position.x + last_player_position.y;
-
-    if( position == 0)  {
-        game.clearRect(start_player_position.x + 5, start_player_position.y - elements_sizes, elements_sizes, elements_sizes);
-        game.fillText(emojis['PLAYER'], start_player_position.x , start_player_position.y - 11)    
-    }
-    else{
-        game.clearRect(start_player_position.x + 10, start_player_position.y - elements_sizes , elements_sizes, elements_sizes);
-        game.fillText(emojis['O'], start_player_position.x , start_player_position.y)    
-        game.fillText(emojis['PLAYER'], player_position.x , player_position.y)
-    }
-    return last_position;
+    game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
 
 
