@@ -19,6 +19,11 @@ const player_position = {
     y: undefined
 };
 
+const gift_position = {
+    x: undefined,
+    y: undefined
+};
+
 
 function set_canvas_sizes(){
     if (window.innerHeight > window.innerWidth){
@@ -61,6 +66,9 @@ function start_game() {
                 player_position.y = position_y;
                 console.log({player_position})
                 }
+            } else if (col == 'I') {
+                gift_position.x = position_x;
+                gift_position.y = position_y
             }
             // console.log([`esto es x ${position_x} y esto es y ${position_y}`]);
 
@@ -81,7 +89,7 @@ function key_move(key_code) {
 
 function up_button() {
     console.log('up');
-    if ((player_position.y - elements_sizes) < elements_sizes){
+    if ((player_position.y - elements_sizes) < (elements_sizes - 1)){
        console.log('out') 
     } else {        
         player_position.y -= elements_sizes;
