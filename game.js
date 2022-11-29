@@ -127,6 +127,14 @@ function left_button() {
 }
 
 function player_move() {
+    const gift_collision_x = player_position.x.toFixed(3) == gift_position.x.toFixed(3);
+    const gift_collision_y = player_position.y.toFixed(3) == gift_position.y.toFixed(3);
+    const gift_collision = gift_collision_x == gift_collision_y;
+
+    if(gift_collision) {
+        console.log('hi')
+    };
+
     game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
 
