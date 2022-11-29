@@ -113,8 +113,8 @@ function left_button() {
     if ((player_position.x - (elements_sizes - 100)) < (elements_sizes)){
         console.log('out') 
      } else {        
-         player_position.x -= elements_sizes;
-         start_game()
+        player_position.x -= elements_sizes;
+        start_game()
      }
 }
 
