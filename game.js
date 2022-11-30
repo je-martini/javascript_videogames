@@ -24,6 +24,8 @@ const gift_position = {
     y: undefined
 };
 
+let enemies_positions = [];
+
 
 function set_canvas_sizes(){
     if (window.innerHeight > window.innerWidth){
@@ -50,7 +52,9 @@ function start_game() {
     const map_rows = map.trim().split('\n');
 
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
-   
+    
+    enemies_positions = [];
+
     game.clearRect(0, 0, canvas_sizes, canvas_sizes)
 
     map_rows_col_element.forEach((row, row_index) => {
@@ -69,6 +73,11 @@ function start_game() {
             } else if (col == 'I') {
                 gift_position.x = position_x;
                 gift_position.y = position_y
+            } else if (col == 'X') {
+                enemies_positions.push({
+                    x: position_x,
+                    y: position_y
+                })
             }
             // console.log([`esto es x ${position_x} y esto es y ${position_y}`]);
 
@@ -108,22 +117,21 @@ function down_button() {
 }
 function rigth_button() {
     console.log('rigth')
-    if ((player_position.x + elements_sizes) >= canvas_sizes){
+    if (Math.trunc(canvas_sizes) <= Math.trunc((player_position.x + elements_sizes))){
         console.log('out') 
-     } else {        
-         player_position.x += elements_sizes;
-         start_game()
-     }
+    } else {        
+        player_position.x += elements_sizes;
+        start_game()
+    }
 }
-
 function left_button() {
     console.log('left')
-    if ((player_position.x - (elements_sizes - 100)) < (elements_sizes)){
+    if (Math.trunc(player_position.x - elements_sizes) < Math.trunc(elements_sizes)){
         console.log('out') 
-     } else {        
+    } else {        
         player_position.x -= elements_sizes;
         start_game()
-     }
+    }
 }
 
 function player_move() {
@@ -135,8 +143,17 @@ function player_move() {
         console.log('hi')
     };
 
+    const enemies_collision = enemies_positions.find(enemy => {
+        const enemy_x = enemy.x == player_position.x
+        const enemy_y = enemy.y == player_position.y
+        return  enemy_x && enemy_y
+    });
+
+    if(enemies_collision) {
+        console.log('enemies')
+    };
+
     game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
-
 
 
