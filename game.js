@@ -11,6 +11,7 @@ let elements_sizes;
 let emoji;
 let position_x;
 let position_y;
+let level = 0;
 
 
 
@@ -43,32 +44,41 @@ function set_canvas_sizes(){
 }
 
 function start_game() {
-
+    
     game.font = elements_sizes + 'px Verdana';          
     game.textAling = 'end'
     
-    const map = maps[0];
+    // const gift_collision_x = Math.trunc(player_position.x) == Math.trunc(gift_position.x);
+    // const gift_collision_y = Math.trunc(player_position.y) == Math.trunc(gift_position.y);
+    // const gift_collision = gift_collision_x == gift_collision_y;
+ 
+    // if(gift_collision) {
+    //     console.log('w')
+    //     level ++
+    // };
+    
+    const map = maps[level];
     
     const map_rows = map.trim().split('\n');
-
+    
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
     
     enemies_positions = [];
 
     game.clearRect(0, 0, canvas_sizes, canvas_sizes)
-
+    
     map_rows_col_element.forEach((row, row_index) => {
         
         row.forEach((col, col_index) => {
             emoji = emojis[col];
             position_x = elements_sizes * (col_index)
             position_y = elements_sizes * (row_index + 1)
-
+            
             if (col == 'O') {
                 if(!player_position.x && !player_position.y ){
-                player_position.x = position_x; 
-                player_position.y = position_y;
-                console.log({player_position})
+                    player_position.x = position_x; 
+                    player_position.y = position_y;
+                    console.log({player_position})
                 }
             } else if (col == 'I') {
                 gift_position.x = position_x;
@@ -80,7 +90,7 @@ function start_game() {
                 })
             }
             // console.log([`esto es x ${position_x} y esto es y ${position_y}`]);
-
+            
             game.fillText(emoji, position_x , position_y)
         })
     });
@@ -99,7 +109,7 @@ function key_move(key_code) {
 function up_button() {
     console.log('up');
     if ((player_position.y - elements_sizes) < (elements_sizes - 1)){
-       console.log('out') 
+        console.log('out') 
     } else {        
         player_position.y -= elements_sizes;
         start_game(); 
@@ -111,7 +121,7 @@ function down_button() {
         console.log('out')
     } else {
         player_position.y += elements_sizes;
-
+        
     }
     start_game()
 }
@@ -134,14 +144,22 @@ function left_button() {
     }
 }
 
-function player_move() {
-    const gift_collision_x = player_position.x.toFixed(3) == gift_position.x.toFixed(3);
-    const gift_collision_y = player_position.y.toFixed(3) == gift_position.y.toFixed(3);
-    const gift_collision = gift_collision_x == gift_collision_y;
+function lose_level(){
+    console.log('you lose') 
+    level = 0;
+    
+}
 
-    if(gift_collision) {
-        console.log('hi')
-    };
+function player_move() {
+    // const gift_collision_x = player_position.x.toFixed(3) == gift_position.x.toFixed(3);
+    // const gift_collision_y = player_position.y.toFixed(3) == gift_position.y.toFixed(3);
+    // const gift_collision = gift_collision_x == gift_collision_y;
+ 
+    // if(gift_collision) {
+    //     console.log('w')
+    //     level ++
+    //     start_game()
+    // };
 
     const enemies_collision = enemies_positions.find(enemy => {
         const enemy_x = enemy.x == player_position.x
@@ -150,10 +168,17 @@ function player_move() {
     });
 
     if(enemies_collision) {
-        console.log('enemies')
+        console.log('l')
+        // lose_level()
     };
 
     game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
+
+// function level_win() {
+//         console.log('win')
+//         level++ ;   
+//         start_game(); 
+//     }
 
 
