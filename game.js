@@ -47,17 +47,43 @@ function start_game() {
     
     game.font = elements_sizes + 'px Verdana';          
     game.textAling = 'end'
+
+    if (Math.trunc(player_position.y) == Math.trunc(gift_position.y)) {
+        if( Math.trunc(player_position.x) == Math.trunc(gift_position.x) ) {
+            level ++
+            console.log('w')
+        }
+    } else if( Math.trunc(player_position.x) == Math.trunc(gift_position.x) ) {
+        if (Math.trunc(player_position.y) == Math.trunc(gift_position.y)) {
+            level ++
+            console.log('w')
+        }
+    }
+
     
-    // const gift_collision_x = Math.trunc(player_position.x) == Math.trunc(gift_position.x);
-    // const gift_collision_y = Math.trunc(player_position.y) == Math.trunc(gift_position.y);
-    // const gift_collision = gift_collision_x == gift_collision_y;
- 
-    // if(gift_collision) {
-    //     console.log('w')
-    //     level ++
-    // };
+    const enemies_collision = enemies_positions.find(enemy => {
+        const enemy_x = enemy.x.toFixed(3) == player_position.x.toFixed(3)
+        const enemy_y = enemy.y.toFixed(3) == player_position.y.toFixed(3)
+        return  enemy_x && enemy_y
+    });
+    if(enemies_collision) {
+        console.log('l')
+        level = 0
+        player_position.x = undefined;
+        player_position.y = undefined;
+    };
+
+    const map_length = maps.length - 1;
+    if(level > map_length){
+        prompt('you win all the game')
+        level = 0
+        player_position.x = undefined;
+        player_position.y = undefined;
+
+    }
     
     const map = maps[level];
+    
     
     const map_rows = map.trim().split('\n');
     
@@ -95,6 +121,8 @@ function start_game() {
         })
     });
     player_move();
+    // enemy_collision = false;
+
 }
 
 
@@ -136,7 +164,7 @@ function rigth_button() {
 }
 function left_button() {
     console.log('left')
-    if (Math.trunc(player_position.x - elements_sizes) < Math.trunc(elements_sizes)){
+    if (Math.trunc((player_position.x * 1.1 ) - elements_sizes) < 0) {
         console.log('out') 
     } else {        
         player_position.x -= elements_sizes;
@@ -161,24 +189,20 @@ function player_move() {
     //     start_game()
     // };
 
-    const enemies_collision = enemies_positions.find(enemy => {
-        const enemy_x = enemy.x == player_position.x
-        const enemy_y = enemy.y == player_position.y
-        return  enemy_x && enemy_y
-    });
+    // const enemies_collision = enemies_positions.find(enemy => {
+    //     const enemy_x = enemy.x == player_position.x
+    //     const enemy_y = enemy.y == player_position.y
+    //     return  enemy_x && enemy_y
+    // });
 
-    if(enemies_collision) {
-        console.log('l')
-        // lose_level()
-    };
+    // if(enemies_collision) {
+    //     console.log('l')
+    //     // lose_level()
+    // };
 
     game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
 
-// function level_win() {
-//         console.log('win')
-//         level++ ;   
-//         start_game(); 
-//     }
+
 
 
