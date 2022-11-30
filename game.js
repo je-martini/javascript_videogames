@@ -12,6 +12,7 @@ let emoji;
 let position_x;
 let position_y;
 let level = 0;
+let life = 3;
 
 
 
@@ -53,12 +54,12 @@ function start_game() {
     lose_level(enemies_positions, player_position.x, player_position.y)
     
     const map_length = maps.length - 1;
+
     if(level > map_length){
         prompt('you win all the game')
         level = 0
         player_position.x = undefined;
         player_position.y = undefined;
-
     }
     
     const map = maps[level];
@@ -169,9 +170,13 @@ function lose_level(enemy_position, player_position_x, player_position_y){
 })
 if(enemies_collision) {
     console.log('l')
-    level = 0
     player_position.x = undefined;
     player_position.y = undefined;
+    life = life - 1;
+    if(life < 1){
+        level = 0
+    }
+    console.log(life)
 };
 }
 
