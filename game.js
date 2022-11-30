@@ -46,33 +46,12 @@ function set_canvas_sizes(){
 function start_game() {
     
     game.font = elements_sizes + 'px Verdana';          
-    game.textAling = 'end'
+    game.textAling = 'end';
 
-    if (Math.trunc(player_position.y) == Math.trunc(gift_position.y)) {
-        if( Math.trunc(player_position.x) == Math.trunc(gift_position.x) ) {
-            level ++
-            console.log('w')
-        }
-    } else if( Math.trunc(player_position.x) == Math.trunc(gift_position.x) ) {
-        if (Math.trunc(player_position.y) == Math.trunc(gift_position.y)) {
-            level ++
-            console.log('w')
-        }
-    }
-
+    win_level(player_position.x, gift_position.y, player_position.y, gift_position.x);
     
-    const enemies_collision = enemies_positions.find(enemy => {
-        const enemy_x = enemy.x.toFixed(3) == player_position.x.toFixed(3)
-        const enemy_y = enemy.y.toFixed(3) == player_position.y.toFixed(3)
-        return  enemy_x && enemy_y
-    });
-    if(enemies_collision) {
-        console.log('l')
-        level = 0
-        player_position.x = undefined;
-        player_position.y = undefined;
-    };
-
+    lose_level(enemies_positions, player_position.x, player_position.y)
+    
     const map_length = maps.length - 1;
     if(level > map_length){
         prompt('you win all the game')
@@ -114,14 +93,11 @@ function start_game() {
                     x: position_x,
                     y: position_y
                 })
-            }
-            // console.log([`esto es x ${position_x} y esto es y ${position_y}`]);
-            
+            }            
             game.fillText(emoji, position_x , position_y)
         })
     });
     player_move();
-    // enemy_collision = false;
 
 }
 
@@ -172,34 +148,34 @@ function left_button() {
     }
 }
 
-function lose_level(){
-    console.log('you lose') 
-    level = 0;
-    
+function win_level (player_position_x, gift_position_y, player_position_y, gift_position_x){
+    if (Math.trunc(player_position_y) == Math.trunc(gift_position_y)) {
+        if( Math.trunc(player_position_x) == Math.trunc(gift_position_x) ) {
+            level ++
+            console.log('w')
+        }
+    } else if( Math.trunc(player_position_x) == Math.trunc(gift_position_x) ) {
+        if (Math.trunc(player_position_y) == Math.trunc(gift_position_y)) {
+            level ++
+            console.log('w')
+        }
+    }
+}
+function lose_level(enemy_position, player_position_x, player_position_y){
+    const enemies_collision = enemy_position.find(enemy => {
+    const enemy_x = enemy.x.toFixed(3) == player_position_x.toFixed(3)
+    const enemy_y = enemy.y.toFixed(3) == player_position_y.toFixed(3)
+    return  enemy_x && enemy_y
+})
+if(enemies_collision) {
+    console.log('l')
+    level = 0
+    player_position.x = undefined;
+    player_position.y = undefined;
+};
 }
 
 function player_move() {
-    // const gift_collision_x = player_position.x.toFixed(3) == gift_position.x.toFixed(3);
-    // const gift_collision_y = player_position.y.toFixed(3) == gift_position.y.toFixed(3);
-    // const gift_collision = gift_collision_x == gift_collision_y;
- 
-    // if(gift_collision) {
-    //     console.log('w')
-    //     level ++
-    //     start_game()
-    // };
-
-    // const enemies_collision = enemies_positions.find(enemy => {
-    //     const enemy_x = enemy.x == player_position.x
-    //     const enemy_y = enemy.y == player_position.y
-    //     return  enemy_x && enemy_y
-    // });
-
-    // if(enemies_collision) {
-    //     console.log('l')
-    //     // lose_level()
-    // };
-
     game.fillText(emojis['PLAYER'], player_position.x , player_position.y - 11)    
 }
 
