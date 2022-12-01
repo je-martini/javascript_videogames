@@ -61,19 +61,22 @@ function start_game() {
     
     const map_length = maps.length - 1;
 
+    if(time_start ==  undefined) {
+        time_start = Date.now()  
+        time_interval = setInterval(show_time, 100)
+    } 
+
     if(level > map_length){
         prompt('you win all the game')
         level = 0
         player_position.x = undefined;
         player_position.y = undefined;
+        clearInterval(time_interval)
+        time_start = undefined;
     }
-    
+
     const map = maps[level];
-    
-    if(time_start) {
-        time_start = Date.now()  
-        time_interval = setInterval(show_time(), 100)
-    }
+
     const map_rows = map.trim().split('\n');
     
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
@@ -188,6 +191,7 @@ function lose_level(enemy_position, player_position_x, player_position_y){
         if(life < 1){
             level = 0
             life = 3
+            time_start = undefined;
         }
     console.log(life)
     };
@@ -199,7 +203,7 @@ function show_lives(){
     span_lives.innerHTML = hearts;
 }
 function show_time(){
- span_time.innerHTML = Date.now() - time_start
+    return span_time.innerHTML = Date.now() - time_start;
 }
 
 function player_move() {
