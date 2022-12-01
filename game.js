@@ -1,4 +1,6 @@
 const canvas = document.querySelector('#game');
+const span_lives = document.querySelector('#lives');
+const span_time =  document.querySelector('#time');
 const game = canvas.getContext('2d');
 
 window.addEventListener('load', set_canvas_sizes);
@@ -13,6 +15,10 @@ let position_x;
 let position_y;
 let level = 0;
 let life = 3;
+
+let time_start;
+let time_playing;
+let time_interval;
 
 
 
@@ -64,11 +70,16 @@ function start_game() {
     
     const map = maps[level];
     
-    
+    if(time_start) {
+        time_start = Date.now()  
+        time_interval = setInterval(show_time(), 100)
+    }
     const map_rows = map.trim().split('\n');
     
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
     
+    show_lives()
+
     enemies_positions = [];
 
     game.clearRect(0, 0, canvas_sizes, canvas_sizes)
@@ -162,22 +173,33 @@ function win_level (player_position_x, gift_position_y, player_position_y, gift_
         }
     }
 }
-function lose_level(enemy_position, player_position_x, player_position_y){
+
+function lose_level(enemy_position, player_position_x, player_position_y){    
     const enemies_collision = enemy_position.find(enemy => {
     const enemy_x = enemy.x.toFixed(3) == player_position_x.toFixed(3)
     const enemy_y = enemy.y.toFixed(3) == player_position_y.toFixed(3)
     return  enemy_x && enemy_y
-})
-if(enemies_collision) {
-    console.log('l')
-    player_position.x = undefined;
-    player_position.y = undefined;
-    life = life - 1;
-    if(life < 1){
-        level = 0
-    }
+    })
+    if(enemies_collision) {
+        console.log('l')
+        player_position.x = undefined;
+        player_position.y = undefined;
+        life --;
+        if(life < 1){
+            level = 0
+            life = 3
+        }
     console.log(life)
-};
+    };
+}
+
+function show_lives(){
+    const hearts =Array(life).fill(emojis['HEART'])
+
+    span_lives.innerHTML = hearts;
+}
+function show_time(){
+ span_time.innerHTML = Date.now() - time_start
 }
 
 function player_move() {
