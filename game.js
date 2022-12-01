@@ -1,6 +1,7 @@
 const canvas = document.querySelector('#game');
 const span_lives = document.querySelector('#lives');
 const span_time =  document.querySelector('#time');
+const span_record = document.querySelector('#record')
 const game = canvas.getContext('2d');
 
 window.addEventListener('load', set_canvas_sizes);
@@ -18,6 +19,8 @@ let life = 3;
 
 let time_start;
 let time_playing;
+let record_time;
+let new_record;
 let time_interval;
 
 
@@ -67,12 +70,7 @@ function start_game() {
     } 
 
     if(level > map_length){
-        prompt('you win all the game')
-        level = 0
-        player_position.x = undefined;
-        player_position.y = undefined;
-        clearInterval(time_interval)
-        time_start = undefined;
+        win_all_game()
     }
 
     const map = maps[level];
@@ -175,6 +173,22 @@ function win_level (player_position_x, gift_position_y, player_position_y, gift_
             console.log('w')
         }
     }
+}
+function win_all_game() {
+    prompt('you win all the game')
+        level = 0
+        player_position.x = undefined;
+        player_position.y = undefined;
+        clearInterval(time_interval);
+        if( record_time == undefined){
+            record_time = time_start;
+            new_record = record_time;
+            span_record.innerHTML = new_record;
+        } else if( new_record < time_start){
+            new_record = time_start
+            span_record.innerHTML = new_record;
+        }
+        time_start = undefined;
 }
 
 function lose_level(enemy_position, player_position_x, player_position_y){    
