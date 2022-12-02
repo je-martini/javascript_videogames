@@ -3,11 +3,16 @@ const span_lives = document.querySelector('#lives');
 const span_time =  document.querySelector('#time');
 const span_record = document.querySelector('#record')
 const game = canvas.getContext('2d');
+const player_position = {
+    x: undefined,
+    y: undefined
+};
+const gift_position = {
+    x: undefined,
+    y: undefined
+};
 
-window.addEventListener('load', set_canvas_sizes);
-window.addEventListener('resize', set_canvas_sizes);
 
-document.addEventListener('keydown', key_move);
 
 let canvas_sizes;
 let elements_sizes;
@@ -16,26 +21,18 @@ let position_x;
 let position_y;
 let level = 0;
 let life = 3;
-
 let time_start;
-let time_playing;
 let record_time;
 let new_record;
 let time_interval;
-
-
-
-const player_position = {
-    x: undefined,
-    y: undefined
-};
-
-const gift_position = {
-    x: undefined,
-    y: undefined
-};
-
 let enemies_positions = [];
+
+
+
+window.addEventListener('load', set_canvas_sizes);
+window.addEventListener('resize', set_canvas_sizes);
+document.addEventListener('keydown', key_move);
+
 
 
 function set_canvas_sizes(){
@@ -49,55 +46,82 @@ function set_canvas_sizes(){
     canvas.setAttribute('height', canvas_sizes);
     
     elements_sizes = canvas_sizes / 10;   
-    console.log(canvas_sizes, elements_sizes);
     start_game();
 }
 
 function start_game() {
     
-    game.font = elements_sizes + 'px Verdana';          
-    game.textAling = 'end';
-
-    win_level(player_position.x, gift_position.y, player_position.y, gift_position.x);
-    
     lose_level(enemies_positions, player_position.x, player_position.y)
     
-    const map_length = maps.length - 1;
+    win_level(player_position.x, gift_position.y, player_position.y, gift_position.x, maps.length - 1);
+    
+    time_playing()
+    
+    show_lives()
+    
+    display_game()
+    
+    player_move();
 
-    if(time_start ==  undefined) {
-        time_start = Date.now()  
-        time_interval = setInterval(show_time, 100)
-    } 
+}
 
-    if(level > map_length){
-        win_all_game()
-    }
+function display_game(){
+    enemies_positions = [];
+
+    game.font = elements_sizes + 'px Verdana';          
+    game.textAling = "end";
 
     const map = maps[level];
 
     const map_rows = map.trim().split('\n');
     
     const map_rows_col_element = map_rows.map(row => row.trim().split(''));
-    
-    show_lives()
-
-    enemies_positions = [];
 
     game.clearRect(0, 0, canvas_sizes, canvas_sizes)
     
-    map_rows_col_element.forEach((row, row_index) => {
-        
-        row.forEach((col, col_index) => {
-            emoji = emojis[col];
-            position_x = elements_sizes * (col_index)
-            position_y = elements_sizes * (row_index + 1)
+    display_grid(map_rows_col_element);
+    //     row.forEach((col, col_index) => {
+    //         emoji = emojis[col];
+    //         position_x = elements_sizes * (col_index)
+    //         position_y = elements_sizes * (row_index + 1)
             
-            if (col == 'O') {
-                if(!player_position.x && !player_position.y ){
-                    player_position.x = position_x; 
-                    player_position.y = position_y;
-                    console.log({player_position})
-                }
+    //         if (col == 'O') {
+    //             if(!player_position.x && !player_position.y ){
+    //                 player_position.x = position_x; 
+    //                 player_position.y = position_y;
+    //                 console.log({player_position})
+    //             }
+    //         } else if (col == 'I') {
+    //             gift_position.x = position_x;
+    //             gift_position.y = position_y
+    //         } else if (col == 'X') {
+    //             enemies_positions.push({
+    //                 x: position_x,
+    //                 y: position_y
+    //             })
+    //         }            
+    //         game.fillText(emoji, position_x , position_y)
+    //     })
+    // });
+}
+
+function display_grid(map_row){
+    map_row.forEach((row, row_index) => {
+        display_cols(row, row_index)
+    });
+}
+
+function display_cols(map_col, index){
+    map_col.forEach((col, col_index) => {
+        emoji = emojis[col];
+        position_x = elements_sizes * (col_index)
+        position_y = elements_sizes * (index + 1)
+
+        if (col == 'O') {
+            if(!player_position.x && !player_position.y ){
+                player_position.x = position_x; 
+                player_position.y = position_y;
+            }
             } else if (col == 'I') {
                 gift_position.x = position_x;
                 gift_position.y = position_y
@@ -107,15 +131,9 @@ function start_game() {
                     y: position_y
                 })
             }            
-            game.fillText(emoji, position_x , position_y)
-        })
+        game.fillText(emoji, position_x , position_y)
     });
-    player_move();
-
 }
-
-
-
 function key_move(key_code) {
     if (key_code.keyCode === 38) up_button();
     if (key_code.keyCode === 37) left_button();
@@ -132,6 +150,7 @@ function up_button() {
         start_game(); 
     }
 }
+
 function down_button() {
     console.log('down')
     if ((player_position.y + elements_sizes) > canvas_sizes){
@@ -142,6 +161,7 @@ function down_button() {
     }
     start_game()
 }
+
 function rigth_button() {
     console.log('rigth')
     if (Math.trunc(canvas_sizes) <= Math.trunc((player_position.x + elements_sizes))){
@@ -151,6 +171,7 @@ function rigth_button() {
         start_game()
     }
 }
+
 function left_button() {
     console.log('left')
     if (Math.trunc((player_position.x * 1.1 ) - elements_sizes) < 0) {
@@ -161,7 +182,7 @@ function left_button() {
     }
 }
 
-function win_level (player_position_x, gift_position_y, player_position_y, gift_position_x){
+function win_level (player_position_x, gift_position_y, player_position_y, gift_position_x, map_length){
     if (Math.trunc(player_position_y) == Math.trunc(gift_position_y)) {
         if( Math.trunc(player_position_x) == Math.trunc(gift_position_x) ) {
             level ++
@@ -173,22 +194,17 @@ function win_level (player_position_x, gift_position_y, player_position_y, gift_
             console.log('w')
         }
     }
+    if(level > map_length){
+        win_all_game()
+    }
 }
+
 function win_all_game() {
     prompt('you win all the game')
         level = 0
         player_position.x = undefined;
         player_position.y = undefined;
-        clearInterval(time_interval);
-        if( record_time == undefined){
-            record_time = time_start;
-            new_record = record_time;
-            span_record.innerHTML = new_record;
-        } else if( new_record < time_start){
-            new_record = time_start
-            span_record.innerHTML = new_record;
-        }
-        time_start = undefined;
+        show_record_time()
 }
 
 function lose_level(enemy_position, player_position_x, player_position_y){    
@@ -211,11 +227,33 @@ function lose_level(enemy_position, player_position_x, player_position_y){
     };
 }
 
+function show_record_time() {
+    clearInterval(time_interval);
+    let show_record = Number(span_time.innerHTML)
+    if( record_time == undefined){
+        record_time = show_record;
+        new_record = record_time;
+        span_record.innerHTML = new_record;
+    } else if( show_record < new_record ){
+        new_record = show_record
+        span_record.innerHTML = new_record;
+    }
+    time_start = undefined;
+}
+
 function show_lives(){
     const hearts =Array(life).fill(emojis['HEART'])
 
     span_lives.innerHTML = hearts;
 }
+
+function time_playing(){
+    if(time_start ==  undefined) {
+        time_start = Date.now() 
+        time_interval = setInterval(show_time, 100)
+    } 
+}
+
 function show_time(){
     return span_time.innerHTML = Date.now() - time_start;
 }
