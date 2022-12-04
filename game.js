@@ -47,7 +47,7 @@ function set_canvas_sizes(){
     canvas.setAttribute('height', canvas_sizes);
     
     elements_sizes = canvas_sizes / 10; 
-      
+
     player_position.x = undefined;
     player_position.y = undefined;
 
@@ -195,8 +195,8 @@ function win_all_game_and_show_record() {
 
 function lose_level(enemy_position, player_position_x, player_position_y){    
     const enemies_collision = enemy_position.find(enemy => {
-    const enemy_x = enemy.x.toFixed(3) == player_position_x.toFixed(3)
-    const enemy_y = enemy.y.toFixed(3) == player_position_y.toFixed(3)
+    const enemy_x = Math.trunc(enemy.x/*.toFixed(3)*/) == Math.trunc(player_position_x/*.toFixed(3)*/)
+    const enemy_y = Math.trunc(enemy.y/*.toFixed(3)*/) == Math.trunc(player_position_y/*.toFixed(3)*/)
     return  enemy_x && enemy_y
     })
     if(enemies_collision) {
