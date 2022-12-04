@@ -2,6 +2,7 @@ const canvas = document.querySelector('#game');
 const span_lives = document.querySelector('#lives');
 const span_time =  document.querySelector('#time');
 const span_record = document.querySelector('#record')
+const p_result = document.querySelector('#result')
 const game = canvas.getContext('2d');
 const player_position = {
     x: undefined,
@@ -19,13 +20,13 @@ let elements_sizes;
 let emoji;
 let position_x;
 let position_y;
+let enemies_positions = [];
 let level = 0;
 let life = 3;
 let time_start;
-let record_time;
 let new_record;
 let time_interval;
-let enemies_positions = [];
+
 
 
 
@@ -45,7 +46,11 @@ function set_canvas_sizes(){
     canvas.setAttribute('width', canvas_sizes);
     canvas.setAttribute('height', canvas_sizes);
     
-    elements_sizes = canvas_sizes / 10;   
+    elements_sizes = canvas_sizes / 10; 
+      
+    player_position.x = undefined;
+    player_position.y = undefined;
+
     start_game();
 }
 
@@ -55,8 +60,10 @@ function start_game() {
     
     win_level(player_position.x, gift_position.y, player_position.y, gift_position.x, maps.length - 1);
     
+    span_record.innerHTML = localStorage.getItem('record_time')
+
     time_playing()
-    
+        
     show_lives()
     
     display_game()
@@ -80,29 +87,7 @@ function display_game(){
     game.clearRect(0, 0, canvas_sizes, canvas_sizes)
     
     display_grid(map_rows_col_element);
-    //     row.forEach((col, col_index) => {
-    //         emoji = emojis[col];
-    //         position_x = elements_sizes * (col_index)
-    //         position_y = elements_sizes * (row_index + 1)
-            
-    //         if (col == 'O') {
-    //             if(!player_position.x && !player_position.y ){
-    //                 player_position.x = position_x; 
-    //                 player_position.y = position_y;
-    //                 console.log({player_position})
-    //             }
-    //         } else if (col == 'I') {
-    //             gift_position.x = position_x;
-    //             gift_position.y = position_y
-    //         } else if (col == 'X') {
-    //             enemies_positions.push({
-    //                 x: position_x,
-    //                 y: position_y
-    //             })
-    //         }            
-    //         game.fillText(emoji, position_x , position_y)
-    //     })
-    // });
+    
 }
 
 function display_grid(map_row){
@@ -134,6 +119,7 @@ function display_cols(map_col, index){
         game.fillText(emoji, position_x , position_y)
     });
 }
+
 function key_move(key_code) {
     if (key_code.keyCode === 38) up_button();
     if (key_code.keyCode === 37) left_button();
@@ -195,11 +181,11 @@ function win_level (player_position_x, gift_position_y, player_position_y, gift_
         }
     }
     if(level > map_length){
-        win_all_game()
+        win_all_game_and_show_record()
     }
 }
 
-function win_all_game() {
+function win_all_game_and_show_record() {
     prompt('you win all the game')
         level = 0
         player_position.x = undefined;
@@ -229,15 +215,22 @@ function lose_level(enemy_position, player_position_x, player_position_y){
 
 function show_record_time() {
     clearInterval(time_interval);
-    let show_record = Number(span_time.innerHTML)
-    if( record_time == undefined){
-        record_time = show_record;
-        new_record = record_time;
-        span_record.innerHTML = new_record;
-    } else if( show_record < new_record ){
-        new_record = show_record
-        span_record.innerHTML = new_record;
-    }
+
+    let show_record = Number(span_time.innerHTML);
+        
+        if(!localStorage.record_time){
+            console.log('1')
+            localStorage.setItem('record_time', show_record);
+            span_record.innerHTML = localStorage.getItem('record_time')
+            
+        } else {
+            let record_time = localStorage.getItem('record_time');
+            if(show_record < Number(record_time)){
+                localStorage.setItem('record_time', show_record);
+                span_record.innerHTML = localStorage.getItem('record_time')
+            }
+        }
+        
     time_start = undefined;
 }
 
