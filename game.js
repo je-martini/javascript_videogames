@@ -42,14 +42,12 @@ function set_canvas_sizes(){
     } else {
         canvas_sizes = window.innerHeight * 0.8
     }
+    canvas_sizes = Number(canvas_sizes.toFixed(0));
     
     canvas.setAttribute('width', canvas_sizes);
     canvas.setAttribute('height', canvas_sizes);
     
     elements_sizes = canvas_sizes / 10; 
-
-    player_position.x = undefined;
-    player_position.y = undefined;
 
     start_game();
 }
